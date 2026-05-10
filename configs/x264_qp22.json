@@ -1,0 +1,33 @@
+{
+  "encoder": "libx264",
+  "preset": "medium",
+  "qp": 22,
+  "qp_flag": "-qp",
+  "pix_fmt": "yuv420p",
+  "audio": "-an",
+  "threads": 1,
+  "loglevel": "error",
+  "ffmpeg_command_template": [
+    "ffmpeg", "-y",
+    "<yuv-input-args>", "-i", "<input>",
+    "-c:v", "libx264",
+    "-qp", "22",
+    "-preset", "medium",
+    "-pix_fmt", "yuv420p",
+    "-an",
+    "-threads", "1",
+    "-v", "error",
+    "<output>.mp4"
+  ],
+  "yuv_input_args_example": [
+    "-f", "rawvideo",
+    "-pix_fmt", "yuv420p",
+    "-s", "1920x1080",
+    "-r", "120"
+  ],
+  "notes": [
+    "preset=medium is required for publication-grade BD-rate. preset=faster drifts BD-VMAF by ~2 pp on RD-sensitive content.",
+    "threads=1 is required for bit-exact reproducibility. threads=0 (auto) is acceptable for diagnostic sweeps but BD-rate may drift across runs.",
+    "QP-mode (constant QP) is used instead of CRF so that the 4-point R-D curve is on a fixed quality grid for the Bjontegaard delta computation."
+  ]
+}

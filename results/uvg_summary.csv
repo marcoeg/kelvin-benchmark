@@ -1,0 +1,9 @@
+sequence,resolution,fps,bd_vmaf_pct,bd_psnr_y_pct,bd_ms_ssim_pct
+Beauty,1920x1080,120,-26.13,28.87,-6.94
+Bosphorus,1920x1080,120,-24.50,22.17,2.83
+HoneyBee,1920x1080,120,-35.83,36.20,11.92
+Jockey,1920x1080,120,-12.26,28.67,3.20
+ReadySteadyGo,1920x1080,120,-8.54,21.25,3.49
+ShakeNDry,1920x1080,120,-20.80,29.28,5.26
+YachtRide,1920x1080,120,-13.58,25.21,3.18
+mean_n7,,,-20.23,27.38,3.28

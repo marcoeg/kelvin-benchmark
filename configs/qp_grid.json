@@ -1,0 +1,10 @@
+{
+  "qp_values": [22, 27, 32, 37],
+  "rationale": [
+    "Standard 4-point QP grid spanning visually-lossless (QP22) through low-bitrate streaming (QP37).",
+    "Required by the Bjontegaard delta computation: the BD-rate is the integrated area between two R-D curves over a shared quality range. A 4-point PCHIP fit is the published standard.",
+    "Identical grid is used for both the libx264 baseline and the Kelvin -> libx264 pipeline so that the two curves are directly comparable."
+  ],
+  "metrics": ["vmaf_v0.6.1", "vmaf_v0.6.1neg", "psnr_y", "ms_ssim"],
+  "bd_rate_method": "Bjontegaard delta on a PCHIP interpolant fit through the 4 RD points; arithmetic mean across sequences."
+}

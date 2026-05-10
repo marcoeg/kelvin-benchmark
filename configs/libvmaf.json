@@ -1,0 +1,21 @@
+{
+  "library": "libvmaf",
+  "version": "v3",
+  "models": [
+    {
+      "name": "vmaf_v0.6.1",
+      "purpose": "Standard VMAF score (perceptual quality)"
+    },
+    {
+      "name": "vmaf_v0.6.1neg",
+      "purpose": "Gaming-resistant VMAF, used to detect false-positive perceptual gains"
+    }
+  ],
+  "auxiliary_features": ["psnr_y", "float_ms_ssim"],
+  "ffmpeg_libvmaf_filter_template": "[0:v][1:v]libvmaf=model='version=vmaf_v0.6.1\\\\:name=vmaf|version=vmaf_v0.6.1neg\\\\:name=vmaf_neg':feature='name=psnr|name=float_ms_ssim':log_path=<output>.json:log_fmt=json",
+  "notes": [
+    "All four metrics are produced from a single libvmaf pass per (reference, distorted) pair.",
+    "Reference is the original raw YUV; distorted is the decoded MP4 from libx264.",
+    "MS-SSIM is reported in the [0,1] domain; the dB transform -10*log10(1-x) is applied only for plotting."
+  ]
+}
