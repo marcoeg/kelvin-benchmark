@@ -5,6 +5,8 @@ Public, reproducible H.264 R-D benchmark for **Kelvin v1.0** — a neural pre-en
 > **What this repo is:** the measurement harness, configs, raw CSV outputs, plots, and (later) the encoded `.mp4` bitstreams that produced them. Anyone can re-run libvmaf against the published bitstreams and reproduce every number to within rounding.
 >
 > **What this repo is *not*:** the Kelvin encoder itself. Kelvin is closed source. It runs inside the [EncodeIQ](https://www.encodeiq.ai) cloud service (Graziano Labs Corp.). The artifacts here are the *outputs* of running EncodeIQ in **Mode C** (preprocessing-only) on UVG and MCL-JCV, then encoding the preprocessed sequences with stock `libx264`.
+>
+> **Checkpoint:** all numbers below are produced by **Kelvin v1.0 checkpoint v12**, the model currently deployed in production EncodeIQ. Tier-2 customers running the EncodeIQ API today get this same model; the published numbers are what you actually get.
 
 ---
 
@@ -12,7 +14,7 @@ Public, reproducible H.264 R-D benchmark for **Kelvin v1.0** — a neural pre-en
 
 | Dataset                          | n  | BD-VMAF (mean) | BD-VMAF-NEG (mean) | BD-PSNR-Y (mean) |
 | -------------------------------- | :- | -------------: | -----------------: | ---------------: |
-| UVG (1080p)                      | 7  | **−20.23%**    | —                  | **+27.38%**      |
+| UVG (1080p)                      | 7  | **−20.57%**    | —                  | **+24.23%**      |
 | MCL-JCV (full)                   | 30 | **−12.80%**    | +5.21%             | +39.50%          |
 | MCL-JCV (excl. 3 named outliers) | 27 | **−20.50%**    | **−2.01%**         | +35.75%          |
 
@@ -70,16 +72,16 @@ Both are decoded back to YUV and scored against the **original** raw YUV. Identi
 
 | Sequence       | BD-VMAF | BD-PSNR-Y | BD-MS-SSIM |
 | -------------- | ------: | --------: | ---------: |
-| Beauty         |  −26.13% |   +28.87% |     −6.94% |
-| Bosphorus      |  −24.50% |   +22.17% |     +2.83% |
-| HoneyBee       |  −35.83% |   +36.20% |    +11.92% |
-| Jockey         |  −12.26% |   +28.67% |     +3.20% |
-| ReadySteadyGo  |   −8.54% |   +21.25% |     +3.49% |
-| ShakeNDry      |  −20.80% |   +29.28% |     +5.26% |
-| YachtRide      |  −13.58% |   +25.21% |     +3.18% |
-| **mean (n=7)** | **−20.23%** | **+27.38%** | **+3.28%** |
+| Beauty         |  −28.00% |   +27.85% |    −12.65% |
+| Bosphorus      |  −20.87% |   +17.57% |     +2.10% |
+| HoneyBee       |  −32.65% |   +28.54% |     +8.88% |
+| Jockey         |  −18.18% |   +26.32% |     −0.44% |
+| ReadySteadyGo  |   −9.66% |   +19.66% |     +2.95% |
+| ShakeNDry      |  −21.69% |   +26.39% |     +5.13% |
+| YachtRide      |  −12.95% |   +23.31% |     +3.37% |
+| **mean (n=7)** | **−20.57%** | **+24.23%** | **+1.34%** |
 
-7/7 wins on BD-VMAF; 7/7 wins on BD-PSNR-Y. The gain ranges from ~−9% on the highest-motion clip (ReadySteadyGo) to ~−36% on a smooth high-detail clip (HoneyBee).
+7/7 wins on BD-VMAF; 7/7 wins on BD-PSNR-Y. The gain ranges from ~−10% on the highest-motion clip (ReadySteadyGo) to ~−33% on a smooth high-detail clip (HoneyBee).
 
 R-D plots: [`plots/uvg_rd_combined_vmaf.png`](plots/uvg_rd_combined_vmaf.png), per-sequence [`plots/uvg_rd_per_sequence_vmaf.png`](plots/uvg_rd_per_sequence_vmaf.png). PSNR and MS-SSIM variants alongside in `plots/`.
 
@@ -122,7 +124,7 @@ To verify the BD-rate computation reproduces the published mean:
 
 ```
 python scripts/bjontegaard.py results/uvg_rd_per_qp_vmaf.csv
-# prints per-sequence BD-VMAF and mean = -20.23%
+# prints per-sequence BD-VMAF and mean = -20.57%
 ```
 
 **Tier 2 — running Kelvin on your own clips (paid pilot):**
