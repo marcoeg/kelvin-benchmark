@@ -35,4 +35,13 @@ exactly via `scripts/bjontegaard.py`.
 
 ## Status
 
-⏳ Pending upload as a GitHub Release.
+✅ All 296 bitstreams (56 UVG + 240 MCL-JCV) are produced and staged in
+`s3://encodeiq-egress/{UVG,MCLJCV}/`. They will be attached to the next
+GitHub Release on this repository.
+
+Production details:
+- Kelvin v1.0 checkpoint v12 (the same model deployed in EncodeIQ today).
+- libx264 preset=medium, threads=1, QP ∈ {22, 27, 32, 37}.
+- libvmaf v3 single pass: vmaf_v0.6.1 + vmaf_v0.6.1neg + psnr + float_ms_ssim.
+- Per-clip `*.opt.summary.json` sidecars with full RD curves + provenance
+  are co-located with the bitstreams.
