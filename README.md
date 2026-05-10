@@ -1,8 +1,10 @@
 # kelvin-benchmark
 
+[![Release](https://img.shields.io/github/v/release/marcoeg/kelvin-benchmark?label=bitstreams&color=blue)](https://github.com/marcoeg/kelvin-benchmark/releases/tag/v1.0.0) [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 Public, reproducible H.264 R-D benchmark for **Kelvin v1.0** — a neural pre-encoder that runs once before `libx264` and reduces bitrate at matched perceptual quality.
 
-> **What this repo is:** the measurement harness, configs, raw CSV outputs, plots, and the encoded `.mp4` bitstreams (forthcoming as a GitHub Release on this repo) that produced them. Anyone can re-run libvmaf against the published bitstreams and reproduce every number to within rounding.
+> **What this repo is:** the measurement harness, configs, raw CSV outputs, plots, and the [296 encoded `.mp4` bitstreams](https://github.com/marcoeg/kelvin-benchmark/releases/tag/v1.0.0) that produced them. Anyone can re-run libvmaf against the published bitstreams and reproduce every number to within rounding.
 >
 > **What this repo is *not*:** the Kelvin encoder itself. Kelvin is closed source. It runs inside the [EncodeIQ](https://www.encodeiq.ai) cloud service (Graziano Labs Corp.). The artifacts here are the *outputs* of running EncodeIQ in **Mode C** (preprocessing-only) on UVG and MCL-JCV, then encoding the preprocessed sequences with stock `libx264`.
 >
@@ -20,6 +22,39 @@ Public, reproducible H.264 R-D benchmark for **Kelvin v1.0** — a neural pre-en
 | MCL-JCV (excl. 3 outliers, old set)      | 27 | −26.65%        | −5.08%             | +18.38%          |
 
 Negative BD-rate = bitrate saved at matched quality. Positive BD-quality = quality gained at matched bitrate. Both are conventional Bjøntegaard-delta values.
+
+---
+
+## Bitstreams
+
+All 296 encoded `.mp4` bitstreams (56 UVG + 240 MCL-JCV) plus per-clip `*.opt.summary.json` sidecars and a SHA-256 manifest are published as GitHub Release assets:
+
+**[Release v1.0.0 — Tier-1 reproducibility bitstreams](https://github.com/marcoeg/kelvin-benchmark/releases/tag/v1.0.0)**
+
+```bash
+REL=https://github.com/marcoeg/kelvin-benchmark/releases/download/v1.0.0
+mkdir -p UVG MCLJCV
+
+# UVG — 56 mp4
+for L in baseline kelvin; do for Q in 22 27 32 37; do
+  curl -fLO $REL/uvg-$L-qp$Q.tar
+done; done
+curl -fLO $REL/summaries-uvg.tar
+for f in uvg-*.tar summaries-uvg.tar; do tar -xf "$f" -C UVG/; done
+
+# MCL-JCV — 240 mp4
+for L in baseline kelvin; do for Q in 22 27 32 37; do
+  curl -fLO $REL/mcljcv-$L-qp$Q.tar
+done; done
+curl -fLO $REL/summaries-mcljcv.tar
+for f in mcljcv-*.tar summaries-mcljcv.tar; do tar -xf "$f" -C MCLJCV/; done
+
+# Verify integrity
+curl -fLO $REL/MANIFEST.sha256
+sha256sum -c MANIFEST.sha256
+```
+
+Full asset table and naming convention: [`bitstreams/MANIFEST.md`](bitstreams/MANIFEST.md).
 
 UVG cleanly delivers **−27.62% mean BD-VMAF, 7/7 wins**, and **−5.18% under VMAF-NEG (6/7)** — the gain holds under the gaming-resistant model.
 
@@ -125,7 +160,7 @@ Per-clip table with `outlier_class` column: [`results/mcljcv_summary.csv`](resul
 ## What's reproducible and what isn't
 
 **Tier 1 — full Bjøntegaard reproduction (anyone, ~30 min):**
-Take the published encoded `.mp4` bitstreams (forthcoming as a GitHub Release on this repo), the original UVG / MCL-JCV YUVs (you supply), the libvmaf invocation in [`configs/libvmaf.json`](configs/libvmaf.json), and [`scripts/bjontegaard.py`](scripts/bjontegaard.py). You get bit-exact the same VMAF / VMAF-NEG / PSNR / MS-SSIM scores and BD-rate values to within rounding. The four CSVs in `results/` are pre-computed for convenience.
+Take the [published encoded `.mp4` bitstreams](https://github.com/marcoeg/kelvin-benchmark/releases/tag/v1.0.0), the original UVG / MCL-JCV YUVs (you supply), the libvmaf invocation in [`configs/libvmaf.json`](configs/libvmaf.json), and [`scripts/bjontegaard.py`](scripts/bjontegaard.py). You get bit-exact the same VMAF / VMAF-NEG / PSNR / MS-SSIM scores and BD-rate values to within rounding. The four CSVs in `results/` are pre-computed for convenience.
 
 To verify the BD-rate computation reproduces the published mean:
 
@@ -164,7 +199,8 @@ kelvin-benchmark/
 │   ├── uvg_rd_per_qp_ms_ssim.csv
 │   └── mcljcv_summary.csv       # 30 clips + outlier_class column + n=30/n=28/n=27/median rows
 ├── plots/                       # PNGs regenerated from results/ via scripts/
-└── bitstreams/                  # MANIFEST + (eventually) GitHub Release attachments
+└── bitstreams/
+    └── MANIFEST.md              # download instructions; the 296 .mp4 + SHA-256 manifest are GitHub Release v1.0.0 assets
 ```
 
 ---
