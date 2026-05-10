@@ -1,47 +1,78 @@
 # Bitstreams
 
-The encoded `.mp4` bitstreams used to produce the numbers in `results/` will
-be uploaded as **GitHub Release attachments** on this repository (they are too
-large to track in git). This file is the placeholder manifest.
+All 296 encoded `.mp4` bitstreams (56 UVG + 240 MCL-JCV) used to produce the
+numbers in `results/` are published as GitHub Release assets:
 
-## Naming convention
+**[Release v1.0.0 — Tier-1 reproducibility bitstreams](https://github.com/marcoeg/kelvin-benchmark/releases/tag/v1.0.0)**
+
+## Download
+
+Bitstreams are split by dataset × leg × QP across 18 tarballs so each asset
+fits comfortably under GitHub's 2 GB per-asset cap.
+
+```bash
+REL=https://github.com/marcoeg/kelvin-benchmark/releases/download/v1.0.0
+mkdir -p UVG MCLJCV
+
+# UVG: 7 sequences × 2 legs × 4 QPs = 56 mp4
+for L in baseline kelvin; do for Q in 22 27 32 37; do
+  curl -fLO $REL/uvg-$L-qp$Q.tar
+done; done
+curl -fLO $REL/summaries-uvg.tar
+for f in uvg-*.tar summaries-uvg.tar; do tar -xf "$f" -C UVG/; done
+
+# MCL-JCV: 30 sequences × 2 legs × 4 QPs = 240 mp4
+for L in baseline kelvin; do for Q in 22 27 32 37; do
+  curl -fLO $REL/mcljcv-$L-qp$Q.tar
+done; done
+curl -fLO $REL/summaries-mcljcv.tar
+for f in mcljcv-*.tar summaries-mcljcv.tar; do tar -xf "$f" -C MCLJCV/; done
+
+# Verify integrity
+curl -fLO $REL/MANIFEST.sha256
+sha256sum -c MANIFEST.sha256
+```
+
+## Asset layout
+
+| Asset | Contents | Size |
+|---|---|---:|
+| `uvg-baseline-qp{22,27,32,37}.tar`  | 7 baseline mp4 per QP | 21–195 MB |
+| `uvg-kelvin-qp{22,27,32,37}.tar`    | 7 Kelvin mp4 per QP   | 22–200 MB |
+| `mcljcv-baseline-qp{22,27,32,37}.tar` | 30 baseline mp4 per QP | 34–315 MB |
+| `mcljcv-kelvin-qp{22,27,32,37}.tar`   | 30 Kelvin mp4 per QP   | 35–319 MB |
+| `summaries-uvg.tar`     | 7 per-clip `*.opt.summary.json`  | 30 KB |
+| `summaries-mcljcv.tar`  | 30 per-clip `*.opt.summary.json` | 100 KB |
+| `MANIFEST.sha256` | SHA-256 of every extracted artifact | 40 KB |
+
+## File naming (after extraction)
 
 ```
-<dataset>__<sequence>__<leg>__qp<Q>.mp4
+<sequence>.opt.<leg>.qp<Q>.mp4
+<sequence>.opt.summary.json
 ```
 
-- `dataset` ∈ {`uvg`, `mcljcv`}
-- `sequence` — sequence name, e.g. `Beauty`, `videoSRC09`
+- `sequence` — e.g. `Beauty_1920x1080_120fps_420_8bit_YUV`, `videoSRC09_1920x1080_25`
 - `leg` ∈ {`baseline`, `kelvin`}
 - `Q` ∈ {22, 27, 32, 37}
 
-So `uvg__HoneyBee__kelvin__qp27.mp4` is the Kelvin-preprocessed HoneyBee
-sequence encoded at QP 27 with the canonical libx264 invocation in
-`configs/x264_qp22.json`.
+The `*.opt.summary.json` sidecars carry the per-clip RD curves, BD-rate
+values, libvmaf log paths, and full provenance (git SHAs, ffmpeg version,
+libvmaf model strings, Kelvin checkpoint hash).
 
-## Expected counts
+## Reproducibility
 
-- UVG: 7 sequences × 2 legs × 4 QPs = **56 bitstreams**
-- MCL-JCV: 30 sequences × 2 legs × 4 QPs = **240 bitstreams**
+Tier-1 reproduction does not require re-running Kelvin. Anyone can:
 
-## Verifying
+1. Download the Release tarballs.
+2. Run libvmaf against the bitstreams using the original UVG / MCL-JCV YUV
+   references and the libvmaf config in `configs/libvmaf.json`.
+3. Recompute BD-rate via `python scripts/bjontegaard.py results/uvg_rd_per_qp_vmaf.csv` —
+   this should print exactly `mean = -27.62%` for UVG.
 
-Once published, every bitstream should be reproducible bit-exactly from the
-corresponding original YUV (UVG / MCL-JCV) plus, for the Kelvin leg, the
-EncodeIQ Mode-C output. Tier-1 reproduction does not require re-running
-Kelvin: anyone can take the published bitstreams, decode them, run libvmaf
-against the original YUV, and reproduce the published BD-rate numbers
-exactly via `scripts/bjontegaard.py`.
+## Production details
 
-## Status
-
-✅ All 296 bitstreams (56 UVG + 240 MCL-JCV) are produced and staged in
-`s3://encodeiq-egress/{UVG,MCLJCV}/`. They will be attached to the next
-GitHub Release on this repository.
-
-Production details:
-- Kelvin v1.0 checkpoint v12 (the same model deployed in EncodeIQ today).
+- **Kelvin v1.0 checkpoint v12** (the same model deployed in EncodeIQ today).
 - libx264 preset=medium, threads=1, QP ∈ {22, 27, 32, 37}.
-- libvmaf v3 single pass: vmaf_v0.6.1 + vmaf_v0.6.1neg + psnr + float_ms_ssim.
-- Per-clip `*.opt.summary.json` sidecars with full RD curves + provenance
-  are co-located with the bitstreams.
+- libvmaf v3 single pass: `vmaf_v0.6.1` + `vmaf_v0.6.1neg` + `psnr` + `float_ms_ssim`.
+- Parity harness pinned to `scene-enhance @ bdbee02`.
