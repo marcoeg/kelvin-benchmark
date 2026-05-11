@@ -32,10 +32,13 @@ and is the standard JCT-VC formulation.
 
 Reproducibility note
 --------------------
-On a 4-point grid this script gives BD-rate values that match the
-ones published in ``results/*_summary.csv`` to within 0.05 pp. Larger
-discrepancies usually mean the input CSV uses a different metric
-column or a different baseline; the CSV header drives metric choice.
+On a 4-point grid this script reproduces the BD-VMAF and BD-PSNR-Y
+values published in ``results/*_summary.csv`` exactly. BD-MS-SSIM
+reproduces to within ~0.25 pp because the per-QP CSV stores MS-SSIM
+to 4 decimals while the published summary was computed from
+full-precision values. Larger discrepancies than that usually mean
+the input CSV uses a different metric column or a different
+baseline; the CSV header drives metric choice.
 """
 
 from __future__ import annotations

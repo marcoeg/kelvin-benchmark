@@ -21,7 +21,7 @@ Public, reproducible H.264 R-D benchmark for **Kelvin v1.0** — a neural pre-en
 | MCL-JCV (excl. 2 named regressions)      | 28 | **−27.70%**    | **−5.37%**         | +20.56%          |
 | MCL-JCV (excl. 3 outliers, old set)      | 27 | −26.65%        | −5.08%             | +18.38%          |
 
-Negative BD-rate = bitrate saved at matched quality. Positive BD-quality = quality gained at matched bitrate. Both are conventional Bjøntegaard-delta values.
+All three columns are BD-rate values (rate-axis Bjøntegaard delta) under their respective metric. Negative = bitrate saved at matched quality. The positive BD-PSNR-Y column reflects rate spent on perceptual content that PSNR cannot see, not a quality regression — see the per-sequence section below.
 
 ---
 
@@ -119,7 +119,7 @@ Both are decoded back to YUV and scored against the **original** raw YUV. Identi
 | YachtRide      | −27.31% |      −7.69% |   +10.80% |     +2.11% |
 | **mean (n=7)** | **−27.62%** | **−5.18%** | **+21.38%** | **+10.13%** |
 
-**7/7 wins on BD-VMAF; 6/7 wins on BD-VMAF-NEG; 7/7 wins on BD-PSNR-Y.** The gain ranges from −16.4% on the highest-motion clip (ReadySteadyGo) to −39.8% on Beauty. The single positive BD-VMAF-NEG (HoneyBee +2.69%) is small and surrounded by very large gains on the standard model and PSNR-Y; it does not look like model gaming.
+**7/7 wins on BD-VMAF; 6/7 wins on BD-VMAF-NEG.** The gain ranges from −16.4% on the highest-motion clip (ReadySteadyGo) to −39.8% on Beauty. The single positive BD-VMAF-NEG (HoneyBee +2.69%) is small and surrounded by very large gains on the standard model; it does not look like model gaming. The BD-PSNR-Y column is positive on all 7 clips (mean +21.38%) — that is the expected signature of a perceptual preprocessor, which trades pixel fidelity for VMAF, not a regression.
 
 R-D plots: [`plots/uvg_rd_combined_vmaf.png`](plots/uvg_rd_combined_vmaf.png), per-sequence [`plots/uvg_rd_per_sequence_vmaf.png`](plots/uvg_rd_per_sequence_vmaf.png). PSNR and MS-SSIM variants alongside in `plots/`.
 
@@ -140,7 +140,7 @@ The mean-vs-median gap is the entire story. Two clips are the only true regressi
 | Excl. videoSRC09, videoSRC13, videoSRC29 | 27 | −26.65% |      −5.08% |   +18.38% |
 | Median (all)                             | 30 | −25.39% |      −5.64% |   +15.60% |
 
-The n=28 BD-VMAF-NEG row is the load-bearing number: VMAF-NEG is the gaming-resistant model, designed to penalize preprocessing tricks. **−5.37% under VMAF-NEG with 23/28 wins** means the saving is not a perceptual artifact of standard VMAF.
+The n=28 BD-VMAF-NEG row is the load-bearing number: VMAF-NEG is the gaming-resistant model, designed to penalize preprocessing tricks. **−5.37% under VMAF-NEG with 24/28 wins** means the saving is not a perceptual artifact of standard VMAF.
 
 Scatter: [`plots/mcljcv_scatter_bdvmaf_vs_bdvmafneg.png`](plots/mcljcv_scatter_bdvmaf_vs_bdvmafneg.png).
 
@@ -223,3 +223,7 @@ Companion writeup: [Inside Kelvin v1.0](https://medium.com/@marcoeg/inside-kelvi
 ## Contact
 
 Marco Graziano — `marco@grazianolabs.com` — [Graziano Labs Corp.](https://www.encodeiq.ai)
+
+---
+
+© 2026 Graziano Labs Corp. — harness, configs, scripts, and CSVs released under [MIT](LICENSE). Kelvin model weights and code are proprietary.
