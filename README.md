@@ -1,6 +1,6 @@
 # kelvin-benchmark
 
-[![Release](https://img.shields.io/github/v/release/marcoeg/kelvin-benchmark?label=bitstreams&color=blue)](https://github.com/marcoeg/kelvin-benchmark/releases/tag/v1.0.0) [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/marcoeg/kelvin-benchmark?label=bitstreams&color=blue)](https://github.com/marcoeg/kelvin-benchmark/releases/tag/v1.0.0) [![arXiv](https://img.shields.io/badge/arXiv-2605.16376-b31b1b.svg)](https://arxiv.org/abs/2605.16376) [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 Public, reproducible H.264 R-D benchmark for **Kelvin v1.0** — a neural pre-encoder that runs once before `libx264` and reduces bitrate at matched perceptual quality.
 
@@ -207,8 +207,22 @@ kelvin-benchmark/
 
 ## Citation
 
+If you use these bitstreams, CSVs, or the harness in your work, please cite the arXiv paper:
+
+```bibtex
+@article{graziano2026kelvin,
+  author  = {Marco Graziano},
+  title   = {Kelvin v1.0: A Neural Pre-Encoder for H.264},
+  journal = {arXiv preprint arXiv:2605.16376},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2605.16376}
+}
 ```
-@misc{graziano2026kelvin,
+
+For the benchmark artifacts specifically:
+
+```bibtex
+@misc{graziano2026kelvinbench,
   author = {Marco Graziano},
   title  = {Kelvin v1.0: a neural pre-encoder for H.264 — public benchmark},
   year   = {2026},
